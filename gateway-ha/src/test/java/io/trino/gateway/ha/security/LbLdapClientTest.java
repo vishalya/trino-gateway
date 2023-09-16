@@ -13,12 +13,15 @@ import org.apache.directory.ldap.client.template.exception.PasswordException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 public class LbLdapClientTest {
   class DummyPasswordWarning implements org.apache.directory.ldap.client.template.PasswordWarning {
     @Override
@@ -41,7 +44,8 @@ public class LbLdapClientTest {
   LdapConnectionTemplate ldapConnectionTemplate;
 
   @Spy
-  LdapConfiguration ldapConfig;
+  LdapConfiguration ldapConfig =
+      LdapConfiguration.load("src/test/resources/auth/ldapTestConfig.yml");
   @InjectMocks
   LbLdapClient lbLdapClient;
 
@@ -52,7 +56,6 @@ public class LbLdapClientTest {
   @BeforeEach
   public void initMocks() {
     log.info("initializing test");
-    ldapConfig = LdapConfiguration.load("src/test/resources/auth/ldapTestConfig.yml");
     org.mockito.MockitoAnnotations.initMocks(this);
   }
 
