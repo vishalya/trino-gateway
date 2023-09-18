@@ -3,7 +3,7 @@ services:
   mysqldb:
     environment:
       - MYSQL_ROOT_PASSWORD=root123
-      - MYSQL_DATABASE=trinogateway
+        - MYSQL_DATABASE=trinogateway
     image: mysql:5.5
     ports:
       - "3306:3306"

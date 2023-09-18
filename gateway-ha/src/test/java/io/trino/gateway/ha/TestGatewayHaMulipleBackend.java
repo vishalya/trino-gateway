@@ -1,5 +1,7 @@
 package io.trino.gateway.ha;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import okhttp3.MediaType;
@@ -7,10 +9,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.Test;
+
 
 public class TestGatewayHaMulipleBackend {
   public static final String EXPECTED_RESPONSE1 = "{\"id\":\"testId1\"}";
@@ -25,7 +27,7 @@ public class TestGatewayHaMulipleBackend {
   private final WireMockServer scheduledBackend =
       new WireMockServer(WireMockConfiguration.options().port(backend2Port));
 
-  @BeforeClass(alwaysRun = true)
+  @BeforeClass
   public void setup() throws Exception {
     HaGatewayTestUtils.prepareMockBackend(adhocBackend, "/v1/statement", EXPECTED_RESPONSE1);
     HaGatewayTestUtils.prepareMockBackend(scheduledBackend, "/v1/statement", EXPECTED_RESPONSE2);
@@ -57,7 +59,7 @@ public class TestGatewayHaMulipleBackend {
             .post(requestBody)
             .build();
     Response response1 = httpClient.newCall(request1).execute();
-    Assert.assertEquals(response1.body().string(), EXPECTED_RESPONSE1);
+    assertEquals(response1.body().string(), EXPECTED_RESPONSE1);
 
     // When X-Trino-Routing-Group is set in header, query should be routed to cluster under the
     // routing group
@@ -68,10 +70,10 @@ public class TestGatewayHaMulipleBackend {
             .addHeader("X-Trino-Routing-Group", "scheduled")
             .build();
     Response response4 = httpClient.newCall(request4).execute();
-    Assert.assertEquals(response4.body().string(), EXPECTED_RESPONSE2);
+    assertEquals(response4.body().string(), EXPECTED_RESPONSE2);
   }
 
-  @AfterClass(alwaysRun = true)
+  @AfterClass
   public void cleanup() {
     adhocBackend.stop();
     scheduledBackend.stop();

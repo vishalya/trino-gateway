@@ -8,10 +8,8 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.eclipse.jetty.client.api.Request;

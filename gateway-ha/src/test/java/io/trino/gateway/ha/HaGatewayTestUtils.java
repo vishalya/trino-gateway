@@ -1,5 +1,7 @@
 package io.trino.gateway.ha;
 
+import static org.junit.Assert.assertTrue;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.trino.gateway.ha.config.DataStoreConfiguration;
@@ -20,7 +22,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.javalite.activejdbc.Base;
-import org.testng.Assert;
 
 @Slf4j
 public class HaGatewayTestUtils {
@@ -114,7 +115,7 @@ public class HaGatewayTestUtils {
             .post(requestBody)
             .build();
     Response response = httpClient.newCall(request).execute();
-    Assert.assertTrue(response.isSuccessful());
+    assertTrue(response.isSuccessful());
   }
 
   @Data
