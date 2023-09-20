@@ -1,7 +1,7 @@
 package io.trino.gateway.ha.resource;
 
 import com.google.inject.Inject;
-import io.dropwizard.views.View;
+import io.dropwizard.views.common.View;
 import io.trino.gateway.ha.security.LbFormAuthManager;
 import io.trino.gateway.ha.security.LbOAuthManager;
 import io.trino.gateway.ha.security.SessionCookie;
