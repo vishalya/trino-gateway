@@ -89,15 +89,6 @@ public class ProxyHandler {
     }
   }
 
-  protected void setProxyHeader(Request proxyRequest, String key, String value) {
-    if (key == null || value == null) {
-      return;
-    }
-    log.debug("Setting header [{}] with value [{}]", key, value);
-    //proxyRequest.getHeaders().remove(key);
-    proxyRequest.header(key, value);
-  }
-
   protected boolean isGZipEncoding(HttpServletResponse response) {
     String contentEncoding = response.getHeader(HttpHeaders.CONTENT_ENCODING);
     return contentEncoding != null && contentEncoding.toLowerCase().contains("gzip");

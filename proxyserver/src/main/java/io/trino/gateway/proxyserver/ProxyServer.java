@@ -54,9 +54,8 @@ public class ProxyServer implements Closeable {
       String keystorePass = config.getKeystorePass();
       File keystoreFile = new File(keystorePath);
 
-      SslContextFactory sslContextFactory = new SslContextFactory.Server();
+      SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
       sslContextFactory.setTrustAll(true);
-      //sslContextFactory.setStopTimeout(TimeUnit.SECONDS.toMillis(15));
       sslContextFactory.setSslSessionTimeout((int) TimeUnit.SECONDS.toMillis(15));
 
       if (!TextUtils.isBlank(keystorePath)) {
@@ -74,13 +73,12 @@ public class ProxyServer implements Closeable {
       src.setStsMaxAge(TimeUnit.SECONDS.toSeconds(2000));
       src.setStsIncludeSubDomains(true);
       httpsConfig.addCustomizer(src);
-      connector = new ServerConnector(server);
-      /* 
-          new ServerConnector(
-              server,
-              new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-              new HttpConnectionFactory(httpsConfig));
-      */
+
+      HttpConnectionFactory connectionFactory = new HttpConnectionFactory(httpsConfig);
+      connector = new ServerConnector(
+                  server,
+                  new SslConnectionFactory(sslContextFactory, connectionFactory.getProtocol()),
+                  connectionFactory);
     } else {
       connector = new ServerConnector(server);
     }
