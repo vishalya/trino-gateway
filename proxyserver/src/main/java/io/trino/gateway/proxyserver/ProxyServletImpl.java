@@ -29,7 +29,7 @@ public class ProxyServletImpl extends ProxyServlet.Transparent {
   // Overriding this method to support ssl
   @Override
   protected HttpClient newHttpClient() {
-    SslContextFactory sslFactory = new SslContextFactory();
+    SslContextFactory sslFactory = new SslContextFactory.Client();
 
     if (serverConfig != null && serverConfig.isForwardKeystore()) {
       sslFactory.setKeyStorePath(serverConfig.getKeystorePath());
@@ -37,10 +37,11 @@ public class ProxyServletImpl extends ProxyServlet.Transparent {
     } else {
       sslFactory.setTrustAll(true);
     }
-    sslFactory.setStopTimeout(TimeUnit.SECONDS.toMillis(15));
+    //sslFactory.setStopTimeout(TimeUnit.SECONDS.toMillis(15));
     sslFactory.setSslSessionTimeout((int) TimeUnit.SECONDS.toMillis(15));
 
-    HttpClient httpClient = new HttpClient(sslFactory);
+    //HttpClient httpClient = new HttpClient(sslFactory);
+    HttpClient httpClient = new HttpClient();
     httpClient.setMaxConnectionsPerDestination(10000);
     httpClient.setConnectTimeout(TimeUnit.SECONDS.toMillis(60));
     return httpClient;

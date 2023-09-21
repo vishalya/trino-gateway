@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jetty.version>9.4.48.v20220622</jetty.version>
         <dropwizard.version>3.0.1</dropwizard.version>
-        <guice.version>4.1.0</guice.version>
+        <guice.version>5.1.0</guice.version>
         <guava.version>23.0</guava.version>
         <jeasy.version>4.1.0</jeasy.version>
         <reflections.version>0.9.10</reflections.version>
@@ -95,6 +95,14 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-views</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-views-freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-jetty</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>

@@ -94,7 +94,7 @@ public class ProxyHandler {
       return;
     }
     log.debug("Setting header [{}] with value [{}]", key, value);
-    proxyRequest.getHeaders().remove(key);
+    //proxyRequest.getHeaders().remove(key);
     proxyRequest.header(key, value);
   }
 
