@@ -39,7 +39,7 @@ import static io.trino.gateway.ha.handler.QueryIdCachingProxyHandler.UI_API_STAT
 import static io.trino.gateway.ha.handler.QueryIdCachingProxyHandler.UI_LOGIN_PATH;
 
 public class ClusterStatsHttpMonitor
-        implements ClusterStatsMonitor
+        extends ClusterStatsMonitor
 {
     private static final Logger log = LoggerFactory.getLogger(ClusterStatsHttpMonitor.class);
     private static final String SESSION_USER = "sessionUser";
@@ -57,6 +57,7 @@ public class ClusterStatsHttpMonitor
     public ClusterStats monitor(ProxyBackendConfiguration backend)
     {
         ClusterStats.Builder clusterStats = ClusterStats.builder(backend.getName());
+        populateClusterStats(clusterStats, backend);
 
         // Fetch Cluster level Stats.
         String response = queryCluster(backend, UI_API_STATS_PATH);

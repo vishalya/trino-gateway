@@ -32,6 +32,11 @@ server:
       port: 8091
       useForwardedHeaders: true
 
+# This can be adjusted based on the coordinator state
+monitor:
+  connectionTimeout: 15
+  taskDelaySeconds: 10
+
 modules:
   - io.trino.gateway.ha.module.HaGatewayProviderModule
   - io.trino.gateway.ha.module.ClusterStateListenerModule

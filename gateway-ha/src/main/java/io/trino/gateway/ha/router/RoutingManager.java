@@ -127,18 +127,19 @@ public abstract class RoutingManager
 
     public void upateBackEndHealth(String backendId, Boolean value)
     {
-        log.info("backend {} isHealthy {}", backendId, value);
+        if (value) {
+            log.info("backend {} is healthy", backendId);
+        }
+        else {
+            log.error("backend {} is unhealthy", backendId);
+        }
         backendToHealth.put(backendId, value);
     }
 
-    public void updateBackEndHealthDB(ClusterStats stats)
+    public void upateBackEndStats(List<ClusterStats> stats)
     {
-        String name = stats.clusterId();
-        if (stats.healthy()) {
-            gatewayBackendManager.activateBackend(name);
-        }
-        else {
-            gatewayBackendManager.deactivateBackend(name);
+        for (ClusterStats clusterStats : stats) {
+            upateBackEndHealth(clusterStats.getClusterId(), clusterStats.isHealthy());
         }
     }
 

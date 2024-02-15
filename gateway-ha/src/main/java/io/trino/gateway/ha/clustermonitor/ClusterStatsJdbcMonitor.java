@@ -16,6 +16,7 @@ package io.trino.gateway.ha.clustermonitor;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import io.trino.gateway.ha.config.BackendStateConfiguration;
 import io.trino.gateway.ha.config.ProxyBackendConfiguration;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ClusterStatsJdbcMonitor
-        implements ClusterStatsMonitor
+        extends ClusterStatsMonitor
 {
     private static final Logger log = LoggerFactory.getLogger(ClusterStatsJdbcMonitor.class);
 
@@ -58,6 +59,7 @@ public class ClusterStatsJdbcMonitor
     {
         String url = backend.getProxyTo();
         ClusterStats.Builder clusterStats = ClusterStats.builder(backend.getName());
+        populateClusterStats(clusterStats, backend);
         String jdbcUrl;
         try {
             URL parsedUrl = new URL(url);

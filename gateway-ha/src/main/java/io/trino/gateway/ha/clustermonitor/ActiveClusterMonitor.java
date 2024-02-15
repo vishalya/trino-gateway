@@ -31,14 +31,16 @@ import java.util.concurrent.TimeUnit;
 public class ActiveClusterMonitor
         implements Managed
 {
-    public static final int MONITOR_TASK_DELAY_MIN = 1;
+
+    public static final int MONITOR_TASK_DELAY_SECONDS = 60;
     public static final int DEFAULT_THREAD_POOL_SIZE = 20;
     private static final Logger log = LoggerFactory.getLogger(ActiveClusterMonitor.class);
 
     private final List<TrinoClusterStatsObserver> clusterStatsObservers;
     private final GatewayBackendManager gatewayBackendManager;
-    private final int taskDelayMin;
-    private final ClusterStatsMonitor clusterStatsMonitor;
+
+    private final int taskDelaySeconds;
+
     private volatile boolean monitorActive = true;
     private final ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
     private final ExecutorService singleTaskExecutor = Executors.newSingleThreadExecutor();
@@ -52,9 +54,9 @@ public class ActiveClusterMonitor
     {
         this.clusterStatsObservers = clusterStatsObservers;
         this.gatewayBackendManager = gatewayBackendManager;
-        this.taskDelayMin = monitorConfiguration.getTaskDelayMin();
+        this.taskDelaySeconds = monitorConfiguration.getTaskDelaySeconds();
         this.clusterStatsMonitor = clusterStatsMonitor;
-        log.info("Running cluster monitor with task delay of {}", taskDelayMin);
+        log.info("Running cluster monitor with connection task delay of {} seconds", taskDelaySeconds);
     }
 
     /**
@@ -67,6 +69,7 @@ public class ActiveClusterMonitor
                 () -> {
                     while (monitorActive) {
                         try {
+                            log.info("Getting the stats for the active clusters");
                             List<ProxyBackendConfiguration> activeClusters =
                                     gatewayBackendManager.getAllActiveBackends();
                             List<Future<ClusterStats>> futures = new ArrayList<>();
@@ -91,7 +94,7 @@ public class ActiveClusterMonitor
                             log.error("Error performing backend monitor tasks", e);
                         }
                         try {
-                            Thread.sleep(TimeUnit.MINUTES.toMillis(taskDelayMin));
+                            Thread.sleep(TimeUnit.SECONDS.toMillis(taskDelaySeconds));
                         }
                         catch (Exception e) {
                             log.error("Error with monitor task", e);

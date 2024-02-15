@@ -15,7 +15,15 @@ package io.trino.gateway.ha.clustermonitor;
 
 import io.trino.gateway.ha.config.ProxyBackendConfiguration;
 
-public interface ClusterStatsMonitor
+public abstract class ClusterStatsMonitor
 {
-    ClusterStats monitor(ProxyBackendConfiguration backend);
+    abstract ClusterStats monitor(ProxyBackendConfiguration backend);
+
+    protected void populateClusterStats(ClusterStats stats, ProxyBackendConfiguration backend)
+    {
+        stats.setClusterId(backend.getName());
+        stats.setProxyTo(backend.getProxyTo());
+        stats.setExternalUrl(backend.getExternalUrl());
+        stats.setRoutingGroup(backend.getRoutingGroup());
+    }
 }

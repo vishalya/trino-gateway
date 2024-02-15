@@ -27,6 +27,7 @@ import io.dropwizard.core.setup.Environment;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.servlets.tasks.Task;
+import io.trino.gateway.ha.module.RouterBaseModule;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -65,6 +67,34 @@ public abstract class BaseApp<T extends AppConfiguration>
     private final Reflections reflections;
     private final ImmutableList.Builder<Module> appModules = ImmutableList.builder();
     private Injector injector;
+
+    private Optional<AppModule> newModule(String clazz, T configuration, Environment environment)
+    {
+        try {
+            logger.info("Trying to load module [{}]", clazz);
+            Object ob =
+                    Class.forName(clazz)
+                            .getConstructor(configuration.getClass(), Environment.class)
+                            .newInstance(configuration, environment);
+            return Optional.of((AppModule) ob);
+        }
+        catch (Exception e) {
+            logger.error("Could not instantiate module [" + clazz + "]", e);
+        }
+        return Optional.empty();
+    }
+
+    private void validateModules(List<AppModule> modules, T configuration, Environment environment)
+    {
+        Optional routerProvider = modules.stream()
+                                        .filter(module -> module instanceof RouterBaseModule)
+                                        .findFirst();
+        if (routerProvider.isEmpty()) {
+            logger.warn("Router provider doesn't exist in the config, using the BasicRouterProvider");
+            String clazz = "io.trino.gateway.ha.module.BasicRouterProvider";
+            modules.add(newModule(clazz, configuration, environment).orElseThrow());
+        }
+    }
 
     protected BaseApp(String... basePackages)
     {
@@ -171,18 +201,11 @@ public abstract class BaseApp<T extends AppConfiguration>
             return modules;
         }
         for (String clazz : configuration.getModules()) {
-            try {
-                logger.info("Trying to load module [{}]", clazz);
-                Object ob =
-                        Class.forName(clazz)
-                                .getConstructor(configuration.getClass(), Environment.class)
-                                .newInstance(configuration, environment);
-                modules.add((AppModule) ob);
-            }
-            catch (Exception e) {
-                logger.error("Could not instantiate module [" + clazz + "]", e);
-            }
+            modules.add(newModule(clazz, configuration, environment).orElseThrow());
         }
+
+        validateModules(modules, configuration, environment);
+
         return modules;
     }
 

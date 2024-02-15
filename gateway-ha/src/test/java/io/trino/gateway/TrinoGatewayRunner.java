@@ -31,14 +31,14 @@ public final class TrinoGatewayRunner
     public static void main(String[] args)
             throws Exception
     {
-        TrinoContainer trino1 = new TrinoContainer("trinodb/trino:395");
+        TrinoContainer trino1 = new TrinoContainer("trinodb/trino:429");
         trino1.setPortBindings(List.of("8081:8080"));
         trino1.start();
         TrinoContainer trino2 = new TrinoContainer("trinodb/trino:395");
         trino2.setPortBindings(List.of("8082:8080"));
         trino2.start();
 
-        PostgreSQLContainer<?> postgres = new PostgreSQLContainer("postgres:16");
+        PostgreSQLContainer<?> postgres = new PostgreSQLContainer("postgres");
         postgres.withUsername("trino_gateway_db_admin");
         postgres.withPassword("P0stG&es");
         postgres.withDatabaseName("trino_gateway_db");

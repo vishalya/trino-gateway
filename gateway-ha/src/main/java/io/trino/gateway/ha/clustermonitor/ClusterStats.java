@@ -114,4 +114,21 @@ public record ClusterStats(
                     userQueuedCount);
         }
     }
+	
+	public synchronized void updateLocalStats(String user)
+    {
+        // The live stats refresh every few seconds, so we update the stats immediately
+        // so that they can be used for next queries to route
+        // We assume that if a user has queued queries then newly arriving queries
+        // for that user would also be queued
+        int count = userQueuedCount == null ? 0 : userQueuedCount.getOrDefault(user, 0);
+        if (count > 0) {
+            userQueuedCount.put(user, count + 1);
+            return;
+        }
+        // Else the we assume that the query would be running
+        // so update the clusterstat with the +1 running queries
+        ++runningQueryCount;
+    }
+
 }
