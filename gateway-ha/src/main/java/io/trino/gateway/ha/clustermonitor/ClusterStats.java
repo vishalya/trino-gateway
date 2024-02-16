@@ -13,8 +13,6 @@
  */
 package io.trino.gateway.ha.clustermonitor;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -240,7 +238,7 @@ public class ClusterStats
         public Builder userQueuedCount(Map<String, Integer> userQueuedCount)
         {
             requireNonNull(userQueuedCount, "userQueuedCount is null");
-            this.userQueuedCount = ImmutableMap.copyOf(userQueuedCount);
+            this.userQueuedCount = userQueuedCount;
             return this;
         }
 
