@@ -164,7 +164,7 @@ public class TestQueryCountBasedRouter
     {
         // The user u1 has same number of queries queued on each cluster
         // The query needs to be routed to cluster with least number of queries running
-        String proxyTo = queryCountBasedRouter.provideBackendForroutingGroup("etl", "u1");
+        String proxyTo = queryCountBasedRouter.provideBackendForRoutingGroup("etl", "u1");
         assertEquals(BACKEND_URL_3, proxyTo);
         assertNotEquals(BACKEND_URL_UNHEALTHY, proxyTo);
 
@@ -177,7 +177,7 @@ public class TestQueryCountBasedRouter
                 .findAny().orElseThrow();
         assertEquals(6, c3Stats.userQueuedCount().getOrDefault("u1", 0));
 
-        proxyTo = queryCountBasedRouter.provideBackendForroutingGroup("etl", "u1");
+        proxyTo = queryCountBasedRouter.provideBackendForRoutingGroup("etl", "u1");
         assertEquals(BACKEND_URL_1, proxyTo);
         assertNotEquals(BACKEND_URL_UNHEALTHY, proxyTo);
     }
@@ -211,7 +211,7 @@ public class TestQueryCountBasedRouter
     public void testAdhocroutingGroupFailOver()
     {
         // The ETL routing group doesn't exist
-        String proxyTo = queryCountBasedRouter.provideBackendForroutingGroup("NonExisting", "u1");
+        String proxyTo = queryCountBasedRouter.provideBackendForRoutingGroup("NonExisting", "u1");
         assertEquals(BACKEND_URL_3, proxyTo);
         assertNotEquals(BACKEND_URL_UNHEALTHY, proxyTo);
     }
@@ -226,7 +226,7 @@ public class TestQueryCountBasedRouter
                 .build();
         queryCountBasedRouter.upateBackEndStats(clusters);
 
-        String proxyTo = queryCountBasedRouter.provideBackendForroutingGroup("NonExisting", "u1");
+        String proxyTo = queryCountBasedRouter.provideBackendForRoutingGroup("NonExisting", "u1");
         assertEquals(BACKEND_URL_4, proxyTo);
         assertNotEquals(BACKEND_URL_UNHEALTHY, proxyTo);
     }
@@ -243,7 +243,7 @@ public class TestQueryCountBasedRouter
 
         queryCountBasedRouter.upateBackEndStats(clusters);
 
-        String proxyTo = queryCountBasedRouter.provideBackendForroutingGroup("NonExisting", "u1");
+        String proxyTo = queryCountBasedRouter.provideBackendForRoutingGroup("NonExisting", "u1");
         assertEquals(BACKEND_URL_5, proxyTo);
         assertNotEquals(BACKEND_URL_UNHEALTHY, proxyTo);
     }

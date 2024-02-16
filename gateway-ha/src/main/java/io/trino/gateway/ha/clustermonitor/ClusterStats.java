@@ -26,7 +26,6 @@ public class ClusterStats
 {
     private int runningQueryCount;
     private int queuedQueryCount;
-    private int blockedQueryCount;
     private int numWorkerNodes;
     private boolean healthy;
     private String clusterId;
@@ -142,7 +141,6 @@ public class ClusterStats
         ClusterStats stats = (ClusterStats) o;
         return runningQueryCount == stats.runningQueryCount &&
                 queuedQueryCount == stats.queuedQueryCount &&
-                blockedQueryCount == stats.blockedQueryCount &&
                 numWorkerNodes == stats.numWorkerNodes &&
                 healthy == stats.healthy &&
                 Objects.equals(clusterId, stats.clusterId) &&
@@ -155,7 +153,7 @@ public class ClusterStats
     @Override
     public int hashCode()
     {
-        return Objects.hash(runningQueryCount, queuedQueryCount, blockedQueryCount, numWorkerNodes, healthy, clusterId, proxyTo, externalUrl, routingGroup, userQueuedCount);
+        return Objects.hash(runningQueryCount, queuedQueryCount, numWorkerNodes, healthy, clusterId, proxyTo, externalUrl, routingGroup, userQueuedCount);
     }
 
     @Override
@@ -164,7 +162,6 @@ public class ClusterStats
         return toStringHelper(this)
                 .add("runningQueryCount", runningQueryCount)
                 .add("queuedQueryCount", queuedQueryCount)
-                .add("blockedQueryCount", blockedQueryCount)
                 .add("numWorkerNodes", numWorkerNodes)
                 .add("healthy", healthy)
                 .add("clusterId", clusterId)
@@ -195,6 +192,7 @@ public class ClusterStats
         public Builder(String clusterId)
         {
             this.clusterId = requireNonNull(clusterId, "clusterId is null");
+            this.userQueuedCount = new HashMap<>();
         }
 
         public Builder runningQueryCount(int runningQueryCount)
@@ -241,6 +239,7 @@ public class ClusterStats
 
         public Builder userQueuedCount(Map<String, Integer> userQueuedCount)
         {
+            requireNonNull(userQueuedCount, "userQueuedCount is null");
             this.userQueuedCount = ImmutableMap.copyOf(userQueuedCount);
             return this;
         }
