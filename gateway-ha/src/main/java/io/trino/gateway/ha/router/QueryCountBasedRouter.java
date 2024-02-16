@@ -69,8 +69,8 @@ public class QueryCountBasedRouter
             readLock.lock();
             log.debug("sorting cluster stats for {} {}", user, routingGroup);
             filteredList = clusterStats.stream()
-                .filter(stats -> stats.isHealthy())
-                .filter(stats -> routingGroup.equals(stats.getRoutingGroup()))
+                .filter(stats -> stats.healthy())
+                .filter(stats -> routingGroup.equals(stats.routingGroup()))
                 .collect(Collectors.toList());
         }
         finally {
@@ -86,23 +86,23 @@ public class QueryCountBasedRouter
             public int compare(ClusterStats lhs, ClusterStats rhs)
             {
                 // First check if the user has any queries queued
-                int compareUserQueue = Integer.compare(lhs.getUserQueuedCount().getOrDefault(user, 0),
-                        rhs.getUserQueuedCount().getOrDefault(user, 0));
+                int compareUserQueue = Integer.compare(lhs.userQueuedCount().getOrDefault(user, 0),
+                        rhs.userQueuedCount().getOrDefault(user, 0));
 
                 if (compareUserQueue != 0) {
                     return compareUserQueue;
                 }
 
-                int compareClusterQueue = Integer.compare(lhs.getQueuedQueryCount(),
-                                                            rhs.getQueuedQueryCount());
+                int compareClusterQueue = Integer.compare(lhs.queuedQueryCount(),
+                                                            rhs.queuedQueryCount());
                 if (compareClusterQueue != 0) {
                     return compareClusterQueue;
                 }
 
                 // If the user has equal number of queries queued then see which cluster
                 // has less number of queries running and route it accordingly
-                return Integer.compare(lhs.getRunningQueryCount(),
-                    rhs.getRunningQueryCount());
+                return Integer.compare(lhs.runningQueryCount(),
+                    rhs.runningQueryCount());
             }
         });
         // The first cluster is right one
@@ -114,7 +114,7 @@ public class QueryCountBasedRouter
         Optional<ClusterStats> cluster = getClusterToRoute(user, routingGroup);
         if (cluster.isPresent()) {
             cluster.orElseThrow().updateLocalStats(user);
-            return Optional.of(cluster.orElseThrow().getProxyTo());
+            return Optional.of(cluster.orElseThrow().proxyTo());
         }
         return Optional.empty();
     }

@@ -24,6 +24,7 @@ import io.trino.gateway.ha.router.HaQueryHistoryManager;
 import io.trino.gateway.ha.router.HaResourceGroupsManager;
 import io.trino.gateway.ha.router.QueryHistoryManager;
 import io.trino.gateway.ha.router.ResourceGroupsManager;
+import org.jdbi.v3.core.Jdbi;
 
 public class RouterBaseModule
         extends AppModule<HaGatewayConfiguration, Environment>
@@ -36,10 +37,11 @@ public class RouterBaseModule
     public RouterBaseModule(HaGatewayConfiguration configuration, Environment environment)
     {
         super(configuration, environment);
-        connectionManager = new JdbcConnectionManager(configuration.getDataStore());
+        Jdbi jdbi = Jdbi.create(configuration.getDataStore().getJdbcUrl(), configuration.getDataStore().getUser(), configuration.getDataStore().getPassword());
+        connectionManager = new JdbcConnectionManager(jdbi, configuration.getDataStore());
         resourceGroupsManager = new HaResourceGroupsManager(connectionManager);
-        gatewayBackendManager = new HaGatewayManager(connectionManager);
-        queryHistoryManager = new HaQueryHistoryManager(connectionManager);
+        gatewayBackendManager = new HaGatewayManager(jdbi);
+        queryHistoryManager = new HaQueryHistoryManager(jdbi);
     }
 
     @Provides

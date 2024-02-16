@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 public class ActiveClusterMonitor
         implements Managed
 {
-
     public static final int MONITOR_TASK_DELAY_SECONDS = 60;
     public static final int DEFAULT_THREAD_POOL_SIZE = 20;
     private static final Logger log = LoggerFactory.getLogger(ActiveClusterMonitor.class);
@@ -40,7 +39,7 @@ public class ActiveClusterMonitor
     private final GatewayBackendManager gatewayBackendManager;
 
     private final int taskDelaySeconds;
-
+    private final ClusterStatsMonitor clusterStatsMonitor;
     private volatile boolean monitorActive = true;
     private final ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
     private final ExecutorService singleTaskExecutor = Executors.newSingleThreadExecutor();

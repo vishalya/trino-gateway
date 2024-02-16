@@ -16,7 +16,6 @@ package io.trino.gateway.ha.clustermonitor;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import io.trino.gateway.ha.config.BackendStateConfiguration;
 import io.trino.gateway.ha.config.ProxyBackendConfiguration;
-import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

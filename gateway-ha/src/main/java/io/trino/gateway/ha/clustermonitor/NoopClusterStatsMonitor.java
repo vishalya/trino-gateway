@@ -16,7 +16,7 @@ package io.trino.gateway.ha.clustermonitor;
 import io.trino.gateway.ha.config.ProxyBackendConfiguration;
 
 public class NoopClusterStatsMonitor
-        implements ClusterStatsMonitor
+        extends ClusterStatsMonitor
 {
     @Override
     public ClusterStats monitor(ProxyBackendConfiguration backend)

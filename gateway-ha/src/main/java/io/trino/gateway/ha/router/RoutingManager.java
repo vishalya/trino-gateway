@@ -139,7 +139,7 @@ public abstract class RoutingManager
     public void upateBackEndStats(List<ClusterStats> stats)
     {
         for (ClusterStats clusterStats : stats) {
-            upateBackEndHealth(clusterStats.getClusterId(), clusterStats.isHealthy());
+            upateBackEndHealth(clusterStats.clusterId(), clusterStats.healthy());
         }
     }
 

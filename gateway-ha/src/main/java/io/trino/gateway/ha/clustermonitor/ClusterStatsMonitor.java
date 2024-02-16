@@ -19,11 +19,10 @@ public abstract class ClusterStatsMonitor
 {
     abstract ClusterStats monitor(ProxyBackendConfiguration backend);
 
-    protected void populateClusterStats(ClusterStats stats, ProxyBackendConfiguration backend)
+    protected void populateClusterStats(ClusterStats.Builder stats, ProxyBackendConfiguration backend)
     {
-        stats.setClusterId(backend.getName());
-        stats.setProxyTo(backend.getProxyTo());
-        stats.setExternalUrl(backend.getExternalUrl());
-        stats.setRoutingGroup(backend.getRoutingGroup());
+        stats.proxyTo(backend.getProxyTo());
+        stats.externalUrl(backend.getExternalUrl());
+        stats.routingGroup(backend.getRoutingGroup());
     }
 }
